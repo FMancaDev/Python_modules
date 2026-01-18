@@ -22,35 +22,35 @@ charlie = set([
     "perfectionist"
 ])
 
-print("=== Achievement Tracker System ===")
+print("=== Achievement Tracker System ===\n")
 print("Player alice achievements:", alice)
 print("Player bob achievements:", bob)
 print("Player charlie achievements:", charlie)
 
-print("=== Achievement Analytics ===")
+print("\n=== Achievement Analytics ===")
 
-# achivements únicos
-all_achievements = alice.union(bob).union(charlie)
+# unique achivements
+all_achievements: set[str] = alice.union(bob).union(charlie)
 print("All unique achievements:", all_achievements)
 print("Total unique achievements:", len(all_achievements))
 
-# achivements comúns a todos os jogadores
-common_all = alice.intersection(bob).intersection(charlie)
-print("Common to all players:", common_all)
+# comuns achivements
+common_all: set[str] = alice.intersection(bob).intersection(charlie)
+print("\nCommon to all players:", common_all)
 
-# achivements raros (só 1 jogador)
-rare_achievements = (
+# rare achivements
+rare_achievements: set[str] = (
     alice.difference(bob).difference(charlie)
     .union(bob.difference(alice).difference(charlie))
     .union(charlie.difference(alice).difference(bob))
 )
 print("Rare achievements (1 player):", rare_achievements)
 
-alice_bob_common = alice.intersection(bob)
-print("Alice vs Bob common:", alice_bob_common)
+alice_bob_common: set[str] = alice.intersection(bob)
+print("\nAlice vs Bob common:", alice_bob_common)
 
-alice_unique = alice.difference(bob)
+alice_unique: set[str] = alice.difference(bob)
 print("Alice unique:", alice_unique)
 
-bob_unique = bob.difference(alice)
+bob_unique: set[str] = bob.difference(alice)
 print("Bob unique:", bob_unique)
