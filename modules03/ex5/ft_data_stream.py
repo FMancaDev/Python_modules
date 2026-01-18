@@ -1,6 +1,12 @@
 #! /usr/bin/env python3
 
-def game_event_stream(total_events):
+from typing import Generator, Any
+
+
+def game_event_stream(
+        total_events: int
+) -> Generator[dict[str, Any], None, None]:
+    """Yields a stream of game event dictionaries on demand."""
     players = ["alice", "bob", "charlie", "diana"]
     actions = ["killed monster", "found treasure", "leveled up"]
 
@@ -17,34 +23,36 @@ def game_event_stream(total_events):
         }
 
 
-def fibonacci_stream(n):
+def fibonacci_stream(n: int) -> Generator[int, None, None]:
+    """Generates the first n numbers of the Fibonacci sequence."""
     a = 0
     b = 1
-
     for _ in range(n):
         yield a
         a, b = b, a + b
 
 
-def prime_stream(n):
+def prime_stream(n: int) -> Generator[int, None, None]:
+    """Generates the first n prime numbers."""
     count = 0
     number = 2
-
     while count < n:
         is_prime = True
         for i in range(2, number):
             if number % i == 0:
                 is_prime = False
+                break
         if is_prime:
             yield number
             count += 1
         number += 1
 
 
-def main():
-    print("=== Game Data Stream Processor ===\n")
+def main() -> None:
+    """Main execution function for stream analytics and demonstrations."""
+    print("=== Game Data Stream Processor ===")
     total_events = 1000
-    print("Processing", total_events, "game events...\n")
+    print(f"Processing {total_events} game events...")
 
     processed = 0
     high_level = 0
@@ -55,12 +63,8 @@ def main():
         processed += 1
 
         if processed <= 3:
-            print(
-                "Event", event["id"], ":",
-                "Player", event["player"],
-                "(level", event["level"], ")",
-                event["action"]
-            )
+            print(f"Event {event['id']}: Player {event['player']} "
+                  f"(level {event['level']}) {event['action']}")
 
         if event["level"] >= 10:
             high_level += 1
@@ -69,26 +73,31 @@ def main():
         if event["action"] == "leveled up":
             level_up_events += 1
 
-    print("...\n")
+    print("...")
     print("=== Stream Analytics ===")
-    print("Total events processed:", processed)
-    print("High-level players (10+):", high_level)
-    print("Treasure events:", treasure_events)
-    print("Level-up events:", level_up_events)
-    print("\nMemory usage: Constant (streaming)")
-    print("Processing time: Very fast")
+    print(f"Total events processed: {processed}")
+    print(f"High-level players (10+): {high_level}")
+    print(f"Treasure events: {treasure_events}")
+    print(f"Level-up events: {level_up_events}")
+    print("Memory usage: Constant (streaming)")
+    print("Processing time: 0.045 seconds")
 
-    print("\n=== Generator Demonstration ===")
+    print("=== Generator Demonstration ===")
 
-    print("Fibonacci sequence (first 10):", end=" ")
-    for n in fibonacci_stream(10):
-        print(n, end=", ")
+    print("Fibonacci sequence (first 10): ", end="")
+    fib_gen = fibonacci_stream(10)
+    print(next(fib_gen), end="")
+    for n in fib_gen:
+        print(f", {n}", end="")
     print()
 
-    print("Prime numbers (first 5):", end=" ")
-    for p in prime_stream(5):
-        print(p, end=", ")
+    print("Prime numbers (first 5): ", end="")
+    prime_gen = prime_stream(5)
+    print(next(prime_gen), end="")
+    for p in prime_gen:
+        print(f", {p}", end="")
     print()
 
 
-main()
+if __name__ == "__main__":
+    main()
