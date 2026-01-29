@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 
 import alchemy
+import alchemy.elements
 
-if __name__ ==  "__main__":
+if __name__ == "__main__":
     print("=== Sacred Scroll Mastery: ===\n")
 
     print("Testing direct module access:")
@@ -20,11 +21,10 @@ if __name__ ==  "__main__":
           f"{alchemy.elements.create_air()}")
 
     print("\nTesting package-level access (controlled by __init__.py):")
-    
     try:
         print(f"alchemy.create_fire(): {alchemy.create_fire()}")
     except AttributeError as erro:
-        print(f"[Error]: {erro}" )
+        print(f"[Error]: {erro}")
 
     try:
         print(f"alchemy.create_water(): {alchemy.create_water()}")
