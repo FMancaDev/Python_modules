@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 
+
 import alchemy.elements  # full modeule import
-from alchemy.elements import create_fire # specific module import
-from alchemy.elements import create_water, create_earth # multiples imports
-from alchemy.potions import healing_potions as hl # aliased import
+from alchemy.elements import create_fire  # specific module import
+from alchemy.elements import create_water, create_earth  # multiples imports
+from alchemy.potions import healing_potions as hl  # aliased import
 from alchemy.potions import strength_potion
 
 if __name__ == "__main__":
