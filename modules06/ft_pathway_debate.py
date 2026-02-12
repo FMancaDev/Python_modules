@@ -7,7 +7,7 @@ from alchemy.transmutation.basic import stone_to_gem  # absolute import
 from alchemy.transmutation.advanced import philosophers_stone, elixir_of_life
 
 if __name__ == "__main__":
-    print("=== Patthway Debate Mastery ===\n")
+    print("\n=== Patthway Debate Mastery ===")
 
     print("\nTesting Absolute Imports (from basic.py)")
     print(f"lead_to_gold(): {lead_to_gold()}")
