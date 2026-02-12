@@ -4,7 +4,7 @@ if __name__ == "__main__":
     from alchemy.grimoire.validator import validate_ingredients as val
     from alchemy.grimoire.spellbook import record_spell as rec
 
-    print("=== Circular Breaking ===\n")
+    print("\n=== Circular Breaking ===\n")
 
     print("testing ingredient validation:")
     print(f"validate_ingredients(\"fire air\"): {val('fire air')}")
