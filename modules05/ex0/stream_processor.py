@@ -128,7 +128,7 @@ class LogProcessor(DataProcessor):
 
 
 if __name__ == "__main__":
-    print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===")
+    print("=== CODE NEXUS - DATA PROCESSOR FOUNDATION ===\n")
 
     num_proc = NumericProcessor()
     txt_proc = TextProcessor()
@@ -144,7 +144,7 @@ if __name__ == "__main__":
         print(num_proc.format_output(res))
 
     # --- Teste Text ---
-    print("Initializing Text Processor...")
+    print("\nInitializing Text Processor...")
     data_txt = "Hello Nexus World"
     print(f"Processing data: \"{data_txt}\"")
     if txt_proc.validate(data_txt):
@@ -153,7 +153,7 @@ if __name__ == "__main__":
         print(txt_proc.format_output(res))
 
     # --- Teste Log ---
-    print("Initializing Log Processor...")
+    print("\nInitializing Log Processor...")
     data_log = "ERROR: Connection timeout"
     print(f"Processing data: \"{data_log}\"")
     if log_proc.validate(data_log):
@@ -161,7 +161,7 @@ if __name__ == "__main__":
         res = log_proc.process(data_log)
         print(log_proc.format_output(res))
 
-    print("=== Polymorphic Processing Demo ===")
+    print("\n=== Polymorphic Processing Demo ===")
     print("Processing multiple data types through same interface...")
 
     res1 = num_proc.process([1, 2, 3])
@@ -173,4 +173,4 @@ if __name__ == "__main__":
     res3 = log_proc.process("INFO: System ready")
     print(f"Result 3: {res3}")
 
-    print("Foundation systems online. Nexus ready for advanced streams.")
+    print("\nFoundation systems online. Nexus ready for advanced streams.")
