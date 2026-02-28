@@ -100,7 +100,7 @@ def main():
     print("=" * 41)
 
     # testes invalidos
-    print("Expected validation error:")
+    print("\nExpected validation error:")
     try:
         SpaceMission(
             mission_id="M_FAIL",
