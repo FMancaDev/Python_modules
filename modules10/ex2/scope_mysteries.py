@@ -1,46 +1,67 @@
-from typing import Callable, Dict, Any
-
-
-def mage_counter() -> Callable[[], int]:
-    """Counts how many times the function was called."""
+def mage_counter() -> callable:
+    """Return a closure that counts how many times it has been called"""
     count = 0
 
-    def counter():
+    def counter() -> int:
         nonlocal count
         count += 1
         return count
+
     return counter
 
 
-def spell_accumulator(initial_power: int) -> Callable[[int], int]:
-    """Accumulates power over time."""
+def spell_accumulator(initial_power: int) -> callable:
+    """Return a closure that accumulates power starting from initial_power"""
     total = initial_power
 
-    def accumulator(power: int):
+    def add_power(amount: int) -> int:
         nonlocal total
-        total += power
+        total += amount
         return total
-    return accumulator
+
+    return add_power
 
 
-def enchantment_factory(enchantment_type: str) -> Callable[[str], str]:
-    """Creates a specific type of enchantment function."""
-    def enchanter(item_name: str):
+def enchantment_factory(enchantment_type: str) -> callable:
+    """Return a function that applies the enchantment to an item name"""
+    def enchant(item_name: str) -> str:
         return f"{enchantment_type} {item_name}"
-    return enchanter
+
+    return enchant
 
 
-def memory_vault() -> Dict[str, Callable]:
-    """Private storage system using closures."""
+def memory_vault() -> dict[str, callable]:
+    """Return a dict with 'store' and 'recal' functions sharing privat state"""
     vault = {}
-    return {
-        "store": lambda k, v: vault.update({k: v}),
-        "recall": lambda k: vault.get(k, "Memory not found")
-    }
+
+    def store(key: str, value) -> None:
+        vault[key] = value
+
+    def recall(key: str):
+        return vault.get(key, "Memory not found")
+
+    return {'store': store, 'recall': recall}
 
 
 if __name__ == "__main__":
-    count = mage_counter()
-    print(f"Count 1: {count()}, Count 2: {count()}")
-    flame = enchantment_factory("Flaming")
-    print(flame("Sword"))
+    print("Testing mage counter...")
+    counter = mage_counter()
+    for i in range(1, 4):
+        print(f"Call {i}: {counter()}")
+
+    print("\nTesting spell accumulator...")
+    accumulator = spell_accumulator(100)
+    print(f"After +50: {accumulator(50)}")
+    print(f"After +30: {accumulator(30)}")
+
+    print("\nTesting enchantment factory...")
+    flaming = enchantment_factory("Flaming")
+    frozen = enchantment_factory("Frozen")
+    print(flaming("Sword"))
+    print(frozen("Shield"))
+
+    print("\nTesting memory vault...")
+    vault = memory_vault()
+    vault['store']('spell', 'Fireball')
+    print(vault['recall']('spell'))
+    print(vault['recall']('unknown'))
