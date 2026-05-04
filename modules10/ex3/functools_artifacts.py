@@ -1,86 +1,53 @@
 import functools
 import operator
+from collections.abc import Callable
+from typing import List, Dict, Any
 
 
-def spell_reducer(spells: list[int], operation: str) -> int:
-    """Reduce spell powers using the specified operation"""
-    ops = {
-        'add': operator.add,
-        'multiply': operator.mul,
-        'max': lambda a, b: a if a > b else b,
-        'min': lambda a, b: a if a < b else b,
-    }
-    if not spells or operation not in ops:
+def spell_reducer(spells: List[int], operation: str) -> int:
+    """Reduz poderes; retorna 0 se vazio ou lida com erros[cite: 340, 345, 346]."""
+    if not spells:
         return 0
+    ops = {"add": operator.add, "multiply": operator.mul, 
+           "max": max, "min": min}
+    if operation not in ops:
+        raise ValueError(f"Unknown operation: {operation}")
     return functools.reduce(ops[operation], spells)
 
 
-def partial_enchanter(base_enchantment: callable) -> dict[str, callable]:
-    """Create partial aplications for fire, ice, and lightning enchantments"""
+def partial_enchanter(base_enchantment: Callable[[int, str, str], str]) -> Dict[str, Callable]:
+    """Cria versões parciais com poder 50 e elemento fixo[cite: 347, 349, 350]."""
+    elements = ["fire", "ice", "lightning"]
     return {
-        'fire_enchant': functools.partial(
-            base_enchantment, power=50, element='fire'
-        ),
-        'ice_enchant': functools.partial(
-            base_enchantment, power=50, element='ice'
-        ),
-        'lightning_enchant': functools.partial(
-            base_enchantment, power=50, element='lightning'
-        ),
+        f"{elem}_enchant": functools.partial(base_enchantment, 50, elem)
+        for elem in elements
     }
 
 
 @functools.lru_cache(maxsize=None)
 def memoized_fibonacci(n: int) -> int:
-    """Return the nth Fibonacci number using memoization"""
-    if n <= 1:
+    """Cálculo de Fibonacci com memoization via lru_cache[cite: 351, 352]."""
+    if n < 2:
         return n
     return memoized_fibonacci(n - 1) + memoized_fibonacci(n - 2)
 
 
-def spell_dispatcher() -> callable:
-    """Create a singledispatch spell system for different input types"""
+def spell_dispatcher() -> Callable[[Any], str]:
+    """Sistema de despacho único baseado no tipo[cite: 359, 360, 362]."""
     @functools.singledispatch
-    def cast(target):
-        return f"Unknown spell type for {target}"
+    def dispatcher(arg: Any) -> str:
+        return "Unknown spell type"
 
-    @cast.register(int)
-    def _(target: int):
-        return f"Damage spell dealing {target} damage"
+    @dispatcher.register(int)
+    def _(arg: int) -> str:
+        return f"Damage spell: {arg} damage"
 
-    @cast.register(str)
-    def _(target: str):
-        return f"Enchantment applied to {target}"
+    @dispatcher.register(str)
+    def _(arg: str) -> str:
+        return f"Enchantment: {arg}"
 
-    @cast.register(list)
-    def _(target: list):
-        return [f"Multi-cast on {t}" for t in target]
+    @dispatcher.register(list)
+    def _(arg: list) -> str:
+        return f"Multi-cast: {len(arg)} spells"
 
-    return cast
-
-
-if __name__ == "__main__":
-    spells = [10, 20, 30, 40]
-    print("Testing spell reducer...")
-    print(f"Sum: {spell_reducer(spells, 'add')}")
-    print(f"Product: {spell_reducer(spells, 'multiply')}")
-    print(f"Max: {spell_reducer(spells, 'max')}")
-
-    print("\nTesting partial enchanter...")
-
-    def base_enchant(target: str, power: int, element: str) -> str:
-        return f"{element.capitalize()} enchant on {target} with {power} power"
-
-    enchanters = partial_enchanter(base_enchant)
-    print(enchanters['fire_enchant'](target='Sword'))
-    print(enchanters['ice_enchant'](target='Shield'))
-
-    print("\nTesting memoized fibonacci...")
-    print(f"Fib(10): {memoized_fibonacci(10)}")
-    print(f"Fib(15): {memoized_fibonacci(15)}")
-
-    print("\nTesting spell dispatcher...")
-    dispatcher = spell_dispatcher()
-    print(dispatcher(50))
-    print(dispatcher("Dragon"))
-    print(dispatcher(["Goblin", "Orc"]))
+    return dispatcher

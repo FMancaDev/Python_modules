@@ -1,59 +1,55 @@
-def spell_combiner(spell1: callable, spell2: callable) -> callable:
-    """Return a new function that calls both spells and returns a tuple"""
-    def combined(*args, **kwargs):
-        return (spell1(*args, **kwargs), spell2(*args, **kwargs))
-    return combined
+from collections.abc import Callable
+from typing import List, Tuple, Any
 
 
-def power_amplifier(base_spell: callable, multiplier: int) -> callable:
-    """Return a new function that multiplies the base spell result"""
-    def amplified(*args, **kwargs):
-        return base_spell(*args, **kwargs) * multiplier
-    return amplified
+def spell_combiner(spell1: Callable[..., Any],
+                   spell2: Callable[..., Any]) -> Callable[..., Tuple[Any, Any]]:
+    """combina dois feiticos num Tuple"""
+    return lambda *args, **kwargs: (spell1(*args, **kwargs),
+                                    spell2(*args, **kwargs))
 
 
-def conditional_caster(condition: callable, spell: callable) -> callable:
-    """Return a function that only casts spell if condition is True"""
-    def cast(*args, **kwargs):
-        if condition(*args, **kwargs):
-            return spell(*args, **kwargs)
-        return "Spell fizzled"
-    return cast
+def power_amplifier(base_spell: Callable[..., Any],
+                    multiplier: int) -> Callable[..., Any]:
+    """multiplica o poder do feitiço"""
+    def amplified_spell(target: str, power: int) -> Any:
+        return base_spell(target, power * multiplier)
+    return amplified_spell
 
 
-def spell_sequence(spells: list[callable]) -> callable:
-    """Return a function that casts all spells"""
-    """and returns a list of results"""
-    def sequence(*args, **kwargs):
-        return [spell(*args, **kwargs) for spell in spells]
-    return sequence
+def conditional_caster(condition: Callable[..., bool],
+                       spell: Callable[..., Any]) -> Callable[..., Any]:
+    """executa o feitico apenas se fo True"""
+    return lambda *args, **kwargs: spell(*args, **kwargs) \
+        if condition(*args, **kwargs) else "Spell fizzled"
+
+
+def spell_sequence(spells: List[Callable[..., Any]]) -> Callable[..., List[Any]]:
+    """executa os feitiços em ordem"""
+    return lambda *args, **kwargs: [s(*args, **kwargs) for s in spells]
 
 
 if __name__ == "__main__":
-    def fireball(target: str) -> str:
-        return f"Fireball hits {target}"
+    def fireball(target: str, power: int = 10) -> str:
+        return f"Fireball hits {target} with {power} power"
 
-    def heal(target: str) -> str:
-        return f"Heals {target}"
+    def heal(target: str, power: int = 10) -> str:
+        return f"Heals {target} for {power} health"
+
+    def is_dragon(target: str, *args, **kwargs) -> bool:
+        return target.lower() == "dragon"
 
     print("Testing spell combiner...")
     combined = spell_combiner(fireball, heal)
-    result = combined("Dragon")
-    print(f"Combined spell result: {result[0]}, {result[1]}")
-
-    def damage(target: str) -> int:
-        return 10
+    res_f, res_h = combined("Dragon", 20)
+    print(f"Combined spell result: {res_f}, {res_h}")
 
     print("\nTesting power amplifier...")
-    mega = power_amplifier(damage, 3)
-    print(f"Original: {damage('enemy')}, Amplified: {mega('enemy')}")
+    mega_fireball = power_amplifier(fireball, 3)
+    print(f"Original: {fireball('Target', 10)}")
+    print(f"Amplified: {mega_fireball('Target', 10)}")
 
     print("\nTesting conditional caster...")
-    def is_enemy(t): return t == "Dragon"
-    fire_if_enemy = conditional_caster(is_enemy, fireball)
-    print(fire_if_enemy("Dragon"))
-    print(fire_if_enemy("Ally"))
-
-    print("\nTesting spell sequence...")
-    sequence = spell_sequence([fireball, heal])
-    print(sequence("Goblin"))
+    dragon_spell = conditional_caster(is_dragon, fireball)
+    print(f"Target Dragon: {dragon_spell('Dragon', 50)}")
+    print(f"Target Goblin: {dragon_spell('Goblin', 50)}")
